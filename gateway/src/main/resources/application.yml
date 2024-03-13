@@ -27,8 +27,24 @@ info:
     name: "gatewayserver"
     description: "Bank Gateway Server Application"
     version: "1.0.0"
+
 logging:
   level:
     com:
       banking:
         gateway: debug
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 2
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000
+    instances:
+      loansCB:
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 2
+        failureRateThreshold: 60
+        waitDurationInOpenState: 10000

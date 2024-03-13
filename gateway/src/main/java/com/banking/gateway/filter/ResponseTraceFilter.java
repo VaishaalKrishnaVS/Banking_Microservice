@@ -1,5 +1,6 @@
 package com.banking.gateway.filter;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -9,9 +10,10 @@ import org.springframework.http.HttpHeaders;
 import reactor.core.publisher.Mono;
 
 @Configuration
+@AllArgsConstructor
 @Slf4j
 public class ResponseTraceFilter {
-    @Autowired
+
     FilterUtility filterUtility;
 
     @Bean
@@ -20,8 +22,10 @@ public class ResponseTraceFilter {
             return chain.filter(exchange).then(Mono.fromRunnable(() -> {
                 HttpHeaders requestHeaders = exchange.getRequest().getHeaders();
                 String correlationId = filterUtility.getCorrelationId(requestHeaders);
-                log.debug("Updated the correlation id to the outbound headers: {}", correlationId);
-                exchange.getResponse().getHeaders().add(filterUtility.CORRELATION_ID, correlationId);
+                if(!(exchange.getResponse().getHeaders().containsKey(FilterUtility.CORRELATION_ID))) {
+                    log.debug("Updated the correlation id to the outbound headers: {}", correlationId);
+                    exchange.getResponse().getHeaders().add(FilterUtility.CORRELATION_ID, correlationId);
+                }
             }));
         };
     }
