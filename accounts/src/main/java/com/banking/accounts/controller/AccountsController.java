@@ -5,6 +5,7 @@ import com.banking.accounts.dto.CustomerDto;
 import com.banking.accounts.dto.ErrorResponseDto;
 import com.banking.accounts.dto.ResponseDto;
 import com.banking.accounts.service.IAccountService;
+import io.github.resilience4j.retry.annotation.Retry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -158,11 +159,25 @@ public class AccountsController {
         }
     }
 
+    @Retry(name = "buildInfoRetry", fallbackMethod = "getBuildInfoFallBack")
     @GetMapping("/build-info")
     public ResponseEntity<String> getBuildInfo(){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(buildVersion);
+    }
+
+    public ResponseEntity<String> getBuildInfoFallBack(Throwable throwable){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body("0.9");
+    }
+
+    @GetMapping("/contact-info")
+    public ResponseEntity<String> getContactDetails(){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body("");
     }
 
 }
