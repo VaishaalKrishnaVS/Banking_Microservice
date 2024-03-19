@@ -15,8 +15,9 @@
     <name>loans</name>
     <description>loans</description>
     <properties>
-        <java.version>16</java.version>
+        <java.version>17</java.version>
         <spring-cloud.version>2023.0.0</spring-cloud.version>
+        <otelVersion>1.32.0</otelVersion>
     </properties>
     <dependencies>
         <dependency>
@@ -35,7 +36,16 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>io.opentelemetry.javaagent</groupId>
+            <artifactId>opentelemetry-javaagent</artifactId>
+            <version>${otelVersion}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -103,7 +113,7 @@
                 <version>3.4.0</version>
                 <configuration>
                     <to>
-                        <image>vaishaal/${project.artifactId}:s7</image>
+                        <image>vaishaal/${project.artifactId}:s11</image>
                     </to>
                 </configuration>
             </plugin>
