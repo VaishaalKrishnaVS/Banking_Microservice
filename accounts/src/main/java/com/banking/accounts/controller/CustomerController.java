@@ -11,6 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
+import java.time.LocalTime;
+
 @Tag(
         name = "REST API for Customers in EazyBank",
         description = "REST APIs in EazyBank to FETCH customer details"
@@ -30,8 +33,10 @@ public class CustomerController {
     public ResponseEntity<CustomerDetailsDto> fetchCustomerDetails(@RequestHeader("correlation-id") String correlationId,
                                                                    @RequestParam @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits")
                                                                    String mobileNumber){
-        log.debug("correlation id found: {}",correlationId);
+        LocalTime now = LocalTime.now();
+        log.debug("Started fetchCustomerDetails method at : "+now);
         CustomerDetailsDto customerDetailsDto = iCustomerService.fetchCustomerDetails(mobileNumber, correlationId);
+        log.debug("Method execution completed for fetchCustomerDetails with total time: "+ Duration.between(now,LocalTime.now()).toString());
         return ResponseEntity.status(HttpStatus.SC_OK).body(customerDetailsDto);
     }
 

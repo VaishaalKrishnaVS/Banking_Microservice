@@ -1,6 +1,10 @@
 server:
   port: 9000
 spring:
+  application:
+    name: "cards"
+  profiles:
+    active: "prod"
   datasource:
     url: jdbc:mysql://localhost:3308/cardsdb
     username: root
@@ -12,22 +16,33 @@ spring:
       mode: always
   config:
     import: "optional:configserver:http://localhost:8071/"
-  profiles:
-    active: "prod"
-  application:
-    name: "cards"
 
 management:
   endpoints:
     web:
       exposure:
         include: "*"
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
   endpoint:
     shutdown:
       enabled: true
+    health:
+      probes:
+        enabled: true
   info:
     env:
       enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+endpoints:
+  shutdown:
+    enabled: true
 
 eureka:
   instance:
@@ -44,6 +59,10 @@ info:
     description: "cards ms"
     version: "1.0.0"
 
-endpoints:
-  shutdown:
-    enabled: true
+logging:
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
+  level:
+    com:
+      banking:
+        cards: debug

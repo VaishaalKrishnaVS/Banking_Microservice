@@ -21,6 +21,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
+import java.time.LocalTime;
+
 @Tag(
         name = "CRUD REST APIs for Cards in EazyBank",
         description = "CRUD REST APIs in EazyBank to CREATE, UPDATE, FETCH AND DELETE card details"
@@ -84,8 +87,10 @@ public class CardsController {
                                                      @RequestParam
                                                      @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits")
                                                      String mobileNumber) {
-        log.debug("correlation id found: {}", correlationId);
+        LocalTime now = LocalTime.now();
+        log.debug("Started fetchCardDetails method at : "+now.toString());
         CardsDto cardsDto = iCardsService.fetchCard(mobileNumber);
+        log.debug("Method execution completed for fetchCardDetails with total time: "+ Duration.between(now,LocalTime.now()).toString());
         return ResponseEntity.status(HttpStatus.OK).body(cardsDto);
     }
 

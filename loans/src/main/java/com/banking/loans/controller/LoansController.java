@@ -21,6 +21,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
+import java.time.LocalTime;
+
 /**
  * @author Eazy Bytes
  */
@@ -89,8 +92,10 @@ public class LoansController {
                                                      @RequestParam
                                                      @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits")
                                                      String mobileNumber) {
-        log.debug("correlation id found: {}", correlationId);
+        LocalTime now = LocalTime.now();
+        log.debug("Started fetchLoanDetails method at : "+now);
         LoansDto loansDto = iLoansService.fetchLoan(mobileNumber);
+        log.debug("Method execution completed for fetchLoanDetails with total time: "+ Duration.between(now,LocalTime.now()).toString());
         return ResponseEntity.status(HttpStatus.OK).body(loansDto);
     }
 
